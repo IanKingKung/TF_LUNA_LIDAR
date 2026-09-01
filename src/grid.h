@@ -10,9 +10,9 @@ class GRID {
         int width;
         int height;
         float resolution;   //size of each cell in cm 
-        std::vector<uint8_t> map_data; //1D array to represent 2D grid, 0 = free, 1 = occupied
+        std::vector<uint8_t> map_data; //1D array to represent 2D grid, 0 = free, 1 = occupied, 2 = unknown
 
-        GRID(int w, int h, float res) : width(w), height(h), resolution(res), map_data(w * h, 0) {}
+        GRID(int w, int h, float res) : width(w), height(h), resolution(res), map_data(w * h, 2) {}
 
         // Set the value of a cell in the grid
         void set_cell(int x, int y, uint8_t value);
@@ -22,6 +22,10 @@ class GRID {
 
         //Marks a physical point (in meters relative to the sensor at 0,0) as occupied
         void mark_occupied_point(const Point2D& pt);
+
+        //Raytrace from the sensor at (0,0) to the hit point and mark all cells along the
+        //path as free
+        void raytrace_and_mark(const Point2D& hit_pt);
 
 };
 
