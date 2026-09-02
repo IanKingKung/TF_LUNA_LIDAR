@@ -13,7 +13,7 @@ uint8_t GRID::get_cell(int x, int y) const {
     return 0; // Return default value for out-of-bounds access
 }
 
-void Grid::mark_occupied_point(const Point2D& pt) {
+void GRID::mark_occupied_point(const Point2D& pt) {
     // Sensor sits at the center cell of the local grid
     int sensor_cell_x = width / 2;
     int sensor_cell_y = height / 2;
@@ -26,7 +26,7 @@ void Grid::mark_occupied_point(const Point2D& pt) {
     set_cell(grid_x, grid_y, 1);
 }
 
-void Grid::raytrace_and_mark(const Point2D& hit_pt) {
+void GRID::raytrace_and_mark(const Point2D& hit_pt) {
     // Sensor sits at the center cell of the local grid
     int sensor_cell_x = width / 2;
     int sensor_cell_y = height / 2;
@@ -65,4 +65,43 @@ void Grid::raytrace_and_mark(const Point2D& hit_pt) {
     if (hit_cell_x >= 0 && hit_cell_x < width && hit_cell_y >= 0 && hit_cell_y < height) {
         set_cell(hit_cell_x, hit_cell_y, 1); // Mark the hit point as occupied
     }
+}
+
+void GRID::render(SDL_Renderer* renderer, int cell_pixel_size) const {
+    
+    //create a rectangle size of cell_size x cell_size
+    SDL_Rect rect;
+    rect.w = cell_pixel_size;
+    rect.h = cell_pixel_size;
+
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            uint8_t state = get_cell(x, y);
+
+            // Choose color based on cell state
+            if (state == 1) {
+                // Occupied (Red)
+                SDL_SetRenderDrawColor(renderer, 255, 50, 50, 255);
+            } else if (state == 0) {
+                // Free space (Light Gray / Off-white)
+                SDL_SetRenderDrawColor(renderer, 220, 220, 220, 255);
+            } else {
+                // Unexplored/Unknown (Dark Gray)
+                SDL_SetRenderDrawColor(renderer, 40, 40, 40, 255);
+            }
+
+            //set position of rectangle to x,y in the grid
+            rect.x = x * cell_pixel_size;
+            rect.y = y * cell_pixel_size;
+            SDL_RenderFillRect(renderer, &rect);
+        }
+    }
+
+    //Sensor location as a green dot at center
+    int center_x = (width / 2) * cell_pixel_size;
+    int center_y = (height / 2) * cell_pixel_size;
+    rect.x = center_x;
+    rect.y = center_y;
+    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255); // Green
+    SDL_RenderFillRect(renderer, &rect);
 }

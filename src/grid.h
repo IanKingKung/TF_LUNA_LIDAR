@@ -4,6 +4,9 @@
 #include <vector>
 #include "coordinate.h"
 #include <cstdint>
+#include <cstdlib>  
+#include <SDL2/SDL.h>
+#include <cmath>
 
 class GRID {
     public: 
@@ -26,6 +29,9 @@ class GRID {
         //Raytrace from the sensor at (0,0) to the hit point and mark all cells along the
         //path as free
         void raytrace_and_mark(const Point2D& hit_pt);
+
+        //render grid to SDL2 renderer
+        void render(SDL_Renderer* renderer, int cell_size) const;
 
 };
 
