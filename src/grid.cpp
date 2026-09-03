@@ -13,7 +13,7 @@ uint8_t GRID::get_cell(int x, int y) const {
     return 0; // Return default value for out-of-bounds access
 }
 
-void GRID::mark_occupied_point(const Point2D& pt) {
+void GRID::mark_occupied_point(const POINT2D& pt) {
     // Sensor sits at the center cell of the local grid
     int sensor_cell_x = width / 2;
     int sensor_cell_y = height / 2;
@@ -26,7 +26,7 @@ void GRID::mark_occupied_point(const Point2D& pt) {
     set_cell(grid_x, grid_y, 1);
 }
 
-void GRID::raytrace_and_mark(const Point2D& hit_pt) {
+void GRID::raytrace_and_mark(const POINT2D& hit_pt) {
     // Sensor sits at the center cell of the local grid
     int sensor_cell_x = width / 2;
     int sensor_cell_y = height / 2;

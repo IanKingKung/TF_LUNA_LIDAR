@@ -1,69 +1,62 @@
 #include <iostream>
-#include <vector>
 #include <SDL2/SDL.h>
 #include "grid.h"
 #include "coordinate.h"
+#include "serial_port.h"
 
 int main(int argc, char* argv[]) {
-    
-    int grid_width = 100; // number of cells in x direction
-    int grid_height = 100; // number of cells in y direction
-    float cell_resolution = 0.05f; // 5 cm per cell
-    int cell_pixel_size = 6; // each grid cell is rendered as 6x6 square
+    //Initialize Grid (100x100 cells, 0.05m / 5cm per cell = 5m x 5m coverage)
+    GRID map(100, 100, 0.05f);
+    int total_steps = 2048;
 
-    GRID map(grid_width, grid_height, cell_resolution);
-
-    //LiDAR scan data
-    int total_steps = 2048; // total steps in one full rotation of the LiDAR
-    for (int step = 0; step < total_steps; ++step) {
-        float simulated_distance = 2.0f; // 2 meters wall distance
-        Point2D hit = steps_to_cartesian(simulated_distance, step, total_steps);
-        map.raytrace_and_mark(hit);
-    }
-
-    //initialize SDL2
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        std::cerr << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
+    //Open Serial Connection (Replace with your actual serial port path)
+    SerialPort serial;
+    std::string port_path = "/dev/cu.usbmodem1301"; // path to serial monitor
+    if (!serial.open_port(port_path, 115200)) {
+        std::cerr << "Failed to connect to Arduino on " << port_path << std::endl;
         return 1;
     }
 
-    int window_width = grid_width * cell_pixel_size;
-    int window_height = grid_height * cell_pixel_size;
-    SDL_Window* window = SDL_CreateWindow("2D LiDAR Occupancy Grid", 
-                                          SDL_WINDOWPOS_CENTERED, 
-                                          SDL_WINDOWPOS_CENTERED, 
-                                          window_width, window_height, 
+    //Initialize SDL Window & Renderer
+    SDL_Init(SDL_INIT_VIDEO);
+    int cell_pixel_size = 6;
+    SDL_Window* window = SDL_CreateWindow("Live TF-Luna LiDAR Map", 
+                                          SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
+                                          map.width * cell_pixel_size, map.height * cell_pixel_size, 
                                           SDL_WINDOW_SHOWN);
-
-    //initialize SDL2 rednerer
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-    // 4. Application Loop
     bool running = true;
     SDL_Event e;
 
+    int live_step = 0;
+    float live_distance_m = 0.0f;
+
+    //Main Event & Visualization Loop
     while (running) {
-        while (SDL_PollEvent(&e) != 0) {
-            if (e.type == SDL_QUIT) {
-                running = false;
+        while (SDL_PollEvent(&e)) {
+            if (e.type == SDL_QUIT) running = false;
+        }
+
+        // Drain serial buffer and update grid with incoming live points
+        while (serial.read_scan_data(live_step, live_distance_m)) {
+            // Filter out TF-Luna error/out-of-range readings (valid range ~0.1m to 8.0m)
+            if (live_distance_m > 0.1f && live_distance_m < 8.0f) {
+                POINT2D hit = steps_to_cartesian(live_distance_m, live_step, total_steps);
+                map.raytrace_and_mark(hit);
             }
         }
 
-        // Clear Screen
+        // Render updated map
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
-
-        // Render Grid
         map.render(renderer, cell_pixel_size);
-
-        // Present Rendered Frame
         SDL_RenderPresent(renderer);
     }
 
-    // Clean up
+    serial.close_port();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
-
     return 0;
 }
