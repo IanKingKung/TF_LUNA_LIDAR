@@ -1,2 +1,2 @@
 # TF_LUNA_LIDAR
-Repository for code implementing a 2D LIDAR scan based on SDL2 visualization with a TF-LUNA component. 
+Repository for code implementing SLAM (Simultaenous Localization and Mapping) as well as pathfinding with a TF-Luna component. Utilizing 2D Lidar Scans to create a grid based on the surrounding environment, this code simultaneously navigates and explores undiscovered areas. This is then used for an autonomous cleaning robot to help it traverse through rooms filled with potential clutter and obstacles. 
