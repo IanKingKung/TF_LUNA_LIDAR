@@ -11,7 +11,7 @@ int main(int argc, char* argv[]) {
 
     //Open Serial Connection (Replace with your actual serial port path)
     SerialPort serial;
-    std::string port_path = "/dev/cu.usbmodem1301"; // path to serial monitor
+    std::string port_path = "/dev/cu.usbserial-2130"; // path to serial monitor
     if (!serial.open_port(port_path, 115200)) {
         std::cerr << "Failed to connect to Arduino on " << port_path << std::endl;
         return 1;
