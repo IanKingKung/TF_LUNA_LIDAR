@@ -1,7 +1,7 @@
 #include "serial_port.h"
 
 bool SerialPort::open_port(const std::string& port_name, int baud_rate) {
-    fd = open(port_name.c_str(), O_RDWR | O_NOCTTY | O_NDELAY);
+    fd = open(port_name.c_str(), O_RDWR | O_NOCTTY | O_NDELAY); //open port in read/write mode, no controlling terminal, non-blocking
     if (fd == -1) {
         std::cerr << "Error opening serial port: " << port_name << std::endl;
         return false;

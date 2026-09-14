@@ -22,6 +22,8 @@ class MovementController {
         float get_current_speed() const;
         bool get_is_scanning() const;
         bool get_is_moving() const;
+        void set_is_scanning(bool scanning);
+        void set_is_moving(bool moving); 
 
     private:
         //robot's current position and orientation
