@@ -3,10 +3,19 @@
 
 #include "coordinate.h"
 #include "serial_port.h"
+#include "command.h"
 
 class MovementController {
     public:
-        MovementController(float start_x = 0.0, float start_y = 0.0, float start_theta = 0.0);  //constructor
+        MovementController::MovementController(float start_x, float start_y, float start_theta)
+            : current_x(start_x), current_y(start_y), theta(start_theta), 
+            current_speed(0.5f), is_scanning(false), is_moving(false) {
+            
+            // Open the serial port once when the controller is created
+            if (!serial.open_port(port_path, 115200)) {
+                std::cerr << "Failed to connect on port path: " << port_path << std::endl;
+            }
+        }
 
         void follow_path(const std::vector<POINT2D>& path, float cell_size);  //follow a path of points in the grid
         void move_forward_one_cell(float cell_size);  //move forward one cell in the grid
@@ -36,6 +45,9 @@ class MovementController {
         bool is_scanning;
         bool is_moving;
 
+        //serial port for sending movement commands to the robot
+        std::string port_path = "/dev/cu.usbserial-2130"; // path to serial monitor
+        SerialPort serial;
 };
 
 #endif // MOVEMENT_CONTROLLER_H
