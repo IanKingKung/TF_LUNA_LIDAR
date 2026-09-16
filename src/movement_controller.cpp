@@ -1,5 +1,7 @@
 #include "movement_controller.h"
 
+//movement is in cm
+
 void MovementController::follow_path(const std::vector<POINT2D>& path, float cell_size) {
     //0 degrees = up, 90 degrees = right, 180 degrees = down, 270 degrees = left
 

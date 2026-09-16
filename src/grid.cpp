@@ -105,3 +105,18 @@ void GRID::render(SDL_Renderer* renderer, int cell_pixel_size) const {
     SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255); // Green
     SDL_RenderFillRect(renderer, &rect);
 }
+
+bool GRID::is_within_bounds(const POINT2D& point) const {
+    int grid_x = width / 2 + static_cast<int>(std::round(point.x / resolution));    // Convert meters to grid cell coordinates
+    int grid_y = height / 2 + static_cast<int>(std::round(point.y / resolution));
+    return (grid_x >= 0 && grid_x < width && grid_y >= 0 && grid_y < height);
+}
+
+bool GRID::is_obstacle(const POINT2D& point) const {
+    int grid_x = width / 2 + static_cast<int>(std::round(point.x / resolution));    // Convert meters to grid cell coordinates
+    int grid_y = height / 2 + static_cast<int>(std::round(point.y / resolution));
+    if (grid_x >= 0 && grid_x < width && grid_y >= 0 && grid_y < height) {
+        return get_cell(grid_x, grid_y) == 1; // 1 = Occupied
+    }
+    return false; // Out of bounds is considered not an obstacle
+}

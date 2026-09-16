@@ -35,6 +35,12 @@ class GRID {
         //render grid to SDL2 renderer
         void render(SDL_Renderer* renderer, int cell_size) const;
 
+        //determine if a point is within the bounds of the grid
+        bool is_within_bounds(const POINT2D& point) const;
+
+        //determine if a point is an obstacle
+        bool is_obstacle(const POINT2D& point) const;
+
 };
 
 
