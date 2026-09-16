@@ -1,7 +1,23 @@
 #include "movement_controller.h"
 
 void MovementController::follow_path(const std::vector<POINT2D>& path, float cell_size) {
-    //TODO
+    //0 degrees = up, 90 degrees = right, 180 degrees = down, 270 degrees = left
+
+    for (const auto& point: path) {
+        // Calculate the angle needed to turn to face the next point
+        float standard_angle = atan2(point.y - current_y, point.x - current_x) * 180.0f / M_PI; // Convert to degrees
+        float target_angle = 90.0f - standard_angle; // Adjust to match the robot's coordinate system (atan2 0 degrees = right, etc)
+
+        
+        //calculate angle difference & normalize angle_difference to be within [-180, 180]
+        float angle_difference = target_angle - theta;
+        while (angle_difference > 180.0f) angle_difference -= 360.0f;
+        while (angle_difference < -180.0f) angle_difference += 360.0f;
+
+        rotate(angle_difference);
+        move_forward_one_cell(cell_size); 
+        update_position(point.x, point.y, target_angle);
+    }
 }
 
 void MovementController::move_forward_one_cell(float cell_size) {

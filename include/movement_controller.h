@@ -38,7 +38,7 @@ class MovementController {
         //robot's current position and orientation
         float current_x;
         float current_y;
-        float theta; // in degrees - 0 degrees facing up on the map
+        float theta; // in degrees - 0 degrees facing up on the map, 90 facing right, 180 facing down, etc.
 
         //track internal state of the robot
         float current_speed;
