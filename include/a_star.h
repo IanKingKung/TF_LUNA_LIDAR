@@ -7,13 +7,13 @@
 #include <cmath>
 #include <algorithm> //for reverse
 #include <queue> 
+#include <unordered_map>
 
 struct Node {   //define custom node structure for A* algorithm
     POINT2D position;
     float g_score;
     float h_score;
     float f_score;
-    Node* parent;
 
     bool operator>(const Node& other) const {
         return f_score > other.f_score;
@@ -22,7 +22,10 @@ struct Node {   //define custom node structure for A* algorithm
         return f_score < other.f_score;
     }
     bool operator==(const Node& other) const {
-        return position == other.position;
+        return position.x == other.position.x && position.y == other.position.y;
+    }
+    bool operator != (const Node& other) const {
+        return position.x != other.position.x || position.y != other.position.y;
     }
 };
 
