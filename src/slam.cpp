@@ -57,32 +57,7 @@ void SLAM::update_measurements() {
 }
 
 void SLAM::update_status() {
-    int num_nodes = pose_graph.size();
-    if (num_nodes == 0) return true;
-
-    // Step A: Resize/Reset information matrix (3N x 3N) and vector (3N)
-    int size = num_nodes * 3;
-    information_matrix.assign(size, std::vector<float>(size, 0.0f));
-    information_vector.assign(size, 0.0f);
-
-    // Step B: Populate H and b from your graph constraints (Linearization)
-    // ... (accumulate Jacobians and information weights) ...
-
-    // Step C: Solve H * delta_x = b (e.g., using Gauss-Newton or a solver)
-    float max_correction = 0.0f;
-    // std::vector<float> delta_x = solve_linear_system(information_matrix, information_vector);
-    // for(int i = 0; i < size; ++i) {
-    //     apply correction to pose_graph coordinates...
-    //     max_correction = std::max(max_correction, std::abs(delta_x[i]));
-    // }
-
-    // Step D: Check Convergence (Stop updating if changes are negligible)
-    float convergence_tolerance = 0.001f; // 1 millimeter threshold
-    if (max_correction < convergence_tolerance) {
-        return true; // Converged! We can stop optimizing for now.
-    }
-
-    return false; // Still optimizing
+    //TODO
 }
 
 void Slam::run_slam() {
