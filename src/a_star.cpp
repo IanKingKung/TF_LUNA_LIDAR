@@ -61,7 +61,7 @@ std::vector<POINT2D> a_star(const POINT2D& start, const POINT2D& goal, const GRI
             float move_cost = (neighbor_pos.x != current_node.position.x && neighbor_pos.y != current_node.position.y) ? 0.05f * sqrt(2.0f) : 0.05f; // Diagonal vs straight cost
             float tentative_g_score = current_node.g_score + move_cost; 
 
-            //only add Nodes if this path is better than any previous path or we haven't seen this node before 
+            //only add Nodes if we haven't seen this node before or this path is better than any previous path
             if(g_scores.find(neighbor_pos) == g_scores.end() || tentative_g_score < g_scores[neighbor_pos]) {
                 g_scores[neighbor_pos] = tentative_g_score;
 
